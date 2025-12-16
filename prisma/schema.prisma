@@ -1,0 +1,30 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum TransactionStatus {
+  pending
+  approved
+  rejected
+}
+
+model Transaction {
+  id                      BigInt      @id @default(autoincrement())
+  transactionExternalId   String      @unique
+  accountExternalIdDebit  String
+  accountExternalIdCredit String
+  transferTypeId          Int
+  value                   Int
+  status                  TransactionStatus @default(pending)
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+
+  @@index([transactionExternalId])
+  @@index([accountExternalIdDebit])
+  @@index([accountExternalIdCredit])
+}
